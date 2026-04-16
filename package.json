@@ -1,0 +1,25 @@
+{
+  "name": "real-time-currency-converter",
+  "version": "1.0.0",
+  "description": "实时汇率换算器 - 简洁现代的货币换算工具",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"暂时无测试\""
+  },
+  "keywords": [
+    "currency",
+    "converter",
+    "exchange",
+    "rate",
+    "real-time",
+    "money"
+  ],
+  "author": "旺旺",
+  "license": "MIT",
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
