@@ -353,14 +353,14 @@
             <div class="currency-table-container">
                 <table class="currency-table" id="currencyTable">
                     <thead>
-                        <tr>
-                            <th width="20%">货币</th>
-                            <th width="20%">汇率 (1单位基准货币)</th>
-                            <th width="20%">换算金额</th>
-                            <th width="20%">100单位换算</th>
-                            <th width="20%">1000单位换算</th>
-                        </tr>
-                    </thead>
+    <tr>
+<th width="20%">货币</th>
+<th width="20%">换算金额</th>
+<th width="20%">汇率 (1单位基准货币)</th>
+<th width="20%">100单位换算</th>
+<th width="20%">1000单位换算</th>
+    </tr>
+  </thead>
                     <tbody id="currencyTableBody">
                         <!-- 汇率数据将通过JavaScript动态生成 -->
                     </tbody>
@@ -449,8 +449,7 @@
                 
                 // 创建表格行
                 const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
+                row.innerHTML = `<td>
                         <div class="currency-flag-cell">
                             <div class="currency-flag">${currency.flag}</div>
                             <div class="currency-info">
@@ -459,11 +458,10 @@
                             </div>
                         </div>
                     </td>
-                    <td class="rate-cell">${formatRate(rate)}</td>
                     <td class="amount-cell">${formatNumber(convertedAmount, 2)}</td>
+                    <td class="rate-cell">${formatRate(rate)}</td>
                     <td class="amount-cell">${formatNumber(amount100, 2)}</td>
-                    <td class="amount-cell">${formatNumber(amount1000, 2)}</td>
-                `;
+                    <td class="amount-cell">${formatNumber(amount1000, 2)}</td>`;
                 
                 // 高亮当前选择的基准货币
                 if (currencyCode === baseCurrencyCode) {
