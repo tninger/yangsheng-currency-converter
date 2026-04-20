@@ -2,379 +2,281 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>汇率换算器</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💱</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汇率换算</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        html, body { 
-            width: 100%; 
-            height: 100%; 
-            overflow: hidden;
-            background: #667eea;
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        .container { 
-            width: 100%;
-            height: 100%;
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8edf5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
             background: white;
-            display: flex;
-            flex-direction: column;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 32px;
         }
         
-        /* 紧凑标题 - 自动高度 */
-        .header { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 4px 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-        
-        .currency-icon { font-size: 14px; flex-shrink: 0; }
-        
-        .title-text h1 { font-size: 12px; font-weight: 600; margin-bottom: 0; line-height: 1.1; }
-        .title-text .subtitle { font-size: 8px; opacity: 0.9; line-height: 1; }
-        
-        /* 输入区域 */
-        .input-section {
-            padding: 3px 6px;
-            border-bottom: 1px solid #eaeaea;
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            background: #f8f9fa;
-            flex-shrink: 0;
-        }
-        
-        .input-label { font-size: 9px; font-weight: 600; color: #333; white-space: nowrap; }
-        
-        .amount-input {
-            flex: 1;
-            padding: 3px 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: 500;
-            min-width: 50px;
-        }
-        
-        .currency-select {
-            padding: 3px 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            font-size: 10px;
-            background: white;
-            cursor: pointer;
-            min-width: 80px;
-            flex: 1;
-        }
-        
-        /* 货币列表 - 自适应高度，填满剩余空间 */
-        .currency-list {
-            flex: 1;
-            overflow-y: auto;
-            min-height: 0;
-        }
-        
-        .currency-item {
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            padding: 2px 6px;
-            border-bottom: 1px solid #f0f0f0;
-            min-height: 24px;
+            gap: 10px;
         }
         
-        .currency-item:hover { background-color: #f5f5f5; }
-        .currency-item:last-child { border-bottom: none; }
+        .subtitle {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
         
-        .currency-flag { font-size: 12px; width: 18px; text-align: center; flex-shrink: 0; }
-        
-        .currency-details {
-            flex: 1;
+        .update-time {
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #234e52;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 3px;
-            min-width: 0;
+            gap: 8px;
         }
         
-        .currency-info {
+        .currency-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        @media (max-width: 640px) {
+            .currency-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .currency-row {
             display: flex;
             align-items: center;
-            gap: 4px;
-            flex: 1;
-            min-width: 0;
-            overflow: hidden;
+            gap: 8px;
+            background: #f0fff4;
+            border: 1px solid #c6f6d5;
+            border-radius: 10px;
+            padding: 12px 16px;
+            transition: all 0.2s ease;
         }
         
-        .currency-code { font-weight: 700; color: #333; font-size: 10px; white-space: nowrap; }
-        .currency-name { font-size: 8px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .currency-row:hover {
+            background: #e6ffed;
+            border-color: #9ae6b4;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(72, 187, 120, 0.15);
+        }
         
-        .amount-display {
-            font-family: 'Courier New', monospace;
+        .currency-code {
             font-weight: 600;
-            font-size: 10px;
-            color: #667eea;
-            text-align: right;
-            white-space: nowrap;
-            min-width: 45px;
-            flex-shrink: 0;
+            color: #2d3748;
+            min-width: 36px;
+            font-size: 13px;
         }
         
-        .rate-display {
-            font-family: 'Courier New', monospace;
-            font-weight: 500;
-            font-size: 8px;
-            color: #666;
-            text-align: left;
-            white-space: nowrap;
-            min-width: 35px;
-            flex-shrink: 0;
-        }
-        
-        /* 控制按钮 */
-        .controls {
-            display: flex;
-            gap: 3px;
-            padding: 3px 6px;
-            background: #f9f9f9;
-            border-top: 1px solid #e0e0e0;
-            flex-shrink: 0;
-        }
-        
-        .btn {
+        .currency-input {
             flex: 1;
-            padding: 3px 5px;
             border: none;
-            border-radius: 3px;
-            font-size: 9px;
+            background: transparent;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a202c;
+            padding: 4px 0;
+            outline: none;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+        
+        .currency-input::placeholder {
+            color: #a0aec0;
+        }
+        
+        .currency-name {
+            background: #68d391;
+            color: white;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+        
+        .divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 24px 0;
+        }
+        
+        .footer-note {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 13px;
+            color: #4a5568;
+            margin-top: 24px;
+        }
+        
+        .footer-note strong {
+            color: #2d3748;
             font-weight: 600;
-            cursor: pointer;
-            display: flex;
+        }
+        
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 2px;
-        }
-        
-        .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover { background: #5a6fd8; }
-        
-        .btn-secondary { background: white; color: #666; border: 1px solid #ccc; }
-        .btn-secondary:hover { background: #f0f0f0; }
-        
-        .last-updated {
-            text-align: center;
-            color: #777;
-            font-size: 7px;
-            padding: 2px 6px;
-            background: #f5f5f5;
-            border-top: 1px solid #e0e0e0;
-            flex-shrink: 0;
-        }
-        
-        /* 高亮基准货币 */
-        .currency-item.base-currency {
-            background-color: #e8f4ff;
-            border-left: 2px solid #667eea;
-            padding-left: 4px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="currency-icon">💱</div>
-            <div class="title-text">
-                <h1>实时汇率换算器</h1>
-                <div class="subtitle">紧凑设计，一屏显示所有货币</div>
-            </div>
+        <h1>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#48bb78" stroke-width="2">
+                <path d="M12 2v20M2 12h20M17 12a5 5 0 00-10 0M12 7a5 5 0 0010 0"/>
+            </svg>
+            汇率换算
+        </h1>
+        <p class="subtitle">简单的汇率换算工具，汇率参考数据，仅供参考。</p>
+        
+        <div class="update-time">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+            </svg>
+            汇率更新时间: 2025-01-20 10:00:00 (仅供参考)
         </div>
         
-        <div class="input-section">
-            <label class="input-label">金额:</label>
-            <input type="number" class="amount-input" id="baseAmount" value="100" min="0" step="0.01" placeholder="金额">
-            <select class="currency-select" id="baseCurrency">
-                <option value="CNY">人民币</option>
-                <option value="USD">美元</option>
-                <option value="EUR">欧元</option>
-                <option value="GBP">英镑</option>
-                <option value="JPY">日元</option>
-            </select>
-        </div>
+        <div class="currency-grid" id="currencyGrid"></div>
         
-        <div class="currency-list" id="currencyList">
-            <!-- 货币项目将通过JavaScript动态生成 -->
-        </div>
+        <div class="divider"></div>
         
-        <div class="controls">
-            <button class="btn btn-secondary" id="resetBtn">
-                <span>↻</span> 重置
-            </button>
-            <button class="btn btn-primary" id="refreshBtn">
-                <span>↻</span> 刷新
-            </button>
-        </div>
-        
-        <div class="last-updated" id="lastUpdated">
-            更新: 正在获取
+        <div class="footer-note">
+            <strong>汇率工具说明</strong><br>
+            • 功能说明：汇率参考常见市场汇率，非实时交易数据，仅供参考。<br>
+            • 新手提示：在任意输入框输入数值，其他货币会自动换算。<br>
+            • 免责声明：汇率随时波动，请以银行实际交易汇率为准。
         </div>
     </div>
 
     <script>
-        // 预设汇率数据
-        const exchangeRates = {
-            CNY: { name: '人民币', flag: '🇨🇳' },
-            USD: { name: '美元', rate: 0.140, flag: '🇺🇸' },
-            EUR: { name: '欧元', rate: 0.127, flag: '🇪🇺' },
-            GBP: { name: '英镑', rate: 0.109, flag: '🇬🇧' },
-            JPY: { name: '日元', rate: 20.5, flag: '🇯🇵' },
-            HKD: { name: '港币', rate: 1.08, flag: '🇭🇰' },
-            AUD: { name: '澳元', rate: 0.208, flag: '🇦🇺' },
-            CAD: { name: '加元', rate: 0.186, flag: '🇨🇦' },
-            SGD: { name: '新加坡元', rate: 0.185, flag: '🇸🇬' },
-            KRW: { name: '韩元', rate: 180.5, flag: '🇰🇷' }
-        };
-        
-        // 货币显示顺序
-        const currencyOrder = ['CNY', 'USD', 'EUR', 'GBP', 'JPY', 'HKD', 'AUD', 'CAD', 'SGD', 'KRW'];
-        
-        // 获取DOM元素
-        const baseAmount = document.getElementById('baseAmount');
-        const baseCurrency = document.getElementById('baseCurrency');
-        const currencyList = document.getElementById('currencyList');
-        const resetBtn = document.getElementById('resetBtn');
-        const refreshBtn = document.getElementById('refreshBtn');
-        const lastUpdated = document.getElementById('lastUpdated');
-        
-        // 格式化数字
-        function formatNumber(num, decimals = 2) {
-            return num.toLocaleString('zh-CN', {
-                minimumFractionDigits: decimals,
-                maximumFractionDigits: decimals
-            });
-        }
-        
-        // 格式化汇率
-        function formatRate(num) {
-            if (num >= 100) return formatNumber(num, 0);
-            if (num >= 10) return formatNumber(num, 2);
-            if (num >= 1) return formatNumber(num, 3);
-            return formatNumber(num, 4);
-        }
-        
-        // 更新货币列表
-        function updateCurrencyList() {
-            const baseAmountValue = parseFloat(baseAmount.value) || 0;
-            const baseCurrencyCode = baseCurrency.value;
-            const baseRate = baseCurrencyCode === 'CNY' ? 1 : exchangeRates[baseCurrencyCode].rate;
+        // 货币配置: [代码, 名称, 对USD汇率]
+        const currencies = [
+            ['CNY', '人民币[中国¥]', 0.1388],
+            ['TWD', '台币[中国台湾NT$]', 0.0306],
+            ['RUB', '卢布[俄罗斯₽]', 0.0109],
+            ['INR', '卢比[印度₹]', 0.0117],
+            ['JPY', '日元[日本¥]', 0.0065],
+            ['SGD', '新元[新加坡S$]', 0.744],
+            ['ARS', '比索[阿根廷$]', 0.001],
+            ['KRW', '韩元[韩国₩]', 0.0007],
+            ['AUD', '澳元[澳大利亚A$]', 0.626],
+            ['THB', '泰铢[泰国฿]', 0.0296],
+            ['CAD', '加元[加拿大C$]', 0.694],
+            ['MXN', '比索[墨西哥$]', 0.0494],
+            ['MYR', '林吉特[马来西亚RM]', 0.224],
+            ['XAU', '国际黄金[克g]', 85.47],
+            ['HKD', '港元[中国香港HK$]', 0.128],
+            ['USD', '美元[美国$]', 1],
+            ['EUR', '欧元[欧盟€]', 1.049],
+            ['VND', '越南盾[越南₫]', 0.00004],
+            ['GBP', '英镑[英国£]', 1.262],
+            ['PHP', '比索[菲律宾₱]', 0.0171],
+            ['TRY', '里拉[土耳其₺]', 0.0287],
+            ['CHF', '法郎[瑞士Fr]', 1.13],
+            ['IDR', '印尼盾[印度尼西亚Rp]', 0.00006],
+            ['PKR', '卢比[巴基斯坦Rs]', 0.0036],
+            ['SAR', '里亚尔[沙特阿拉伯SR]', 0.267],
+            ['BDT', '塔卡[孟加拉国৳]', 0.0083],
+            ['BTC', '比特币[仅供参考]', 105000]
+        ];
+
+        // 生成HTML
+        function init() {
+            const grid = document.getElementById('currencyGrid');
             
-            currencyList.innerHTML = '';
-            
-            currencyOrder.forEach(currencyCode => {
-                const currency = exchangeRates[currencyCode];
-                
-                let rate = 1;
-                if (currencyCode === baseCurrencyCode) {
-                    rate = 1;
-                } else {
-                    const targetRate = currency.rate || 1;
-                    rate = targetRate / baseRate;
-                }
-                
-                const convertedAmount = baseAmountValue * rate;
-                
-                const item = document.createElement('div');
-                item.className = 'currency-item';
-                if (currencyCode === baseCurrencyCode) {
-                    item.classList.add('base-currency');
-                }
-                
-                item.innerHTML = `
-                    <div class="currency-flag">${currency.flag}</div>
-                    <div class="currency-details">
-                        <div class="currency-info">
-                            <span class="currency-code">${currencyCode}</span>
-                            <span class="currency-name">${currency.name}</span>
-                        </div>
-                        <div class="amount-display">${formatNumber(convertedAmount, 2)}</div>
-                        <div class="rate-display">${formatRate(rate)}</div>
-                    </div>
+            currencies.forEach(([code, name, rate]) => {
+                const row = document.createElement('div');
+                row.className = 'currency-row';
+                row.innerHTML = `
+                    <span class="currency-code">${code}</span>
+                    <input type="number" class="currency-input" id="${code}" 
+                           placeholder="0.00" step="any" data-rate="${rate}">
+                    <span class="currency-name">${name}</span>
                 `;
-                
-                currencyList.appendChild(item);
+                grid.appendChild(row);
             });
-            
-            updateLastUpdated();
-        }
-        
-        // 重置
-        function reset() {
-            baseAmount.value = '100';
-            baseCurrency.value = 'CNY';
-            updateCurrencyList();
-            
-            resetBtn.style.transform = 'rotate(360deg)';
-            setTimeout(() => {
-                resetBtn.style.transform = '';
-            }, 200);
-        }
-        
-        // 刷新汇率
-        function refreshRates() {
-            lastUpdated.textContent = '更新中...';
-            refreshBtn.innerHTML = '<span>⏳</span> 更新';
-            
-            setTimeout(() => {
-                updateCurrencyList();
-                lastUpdated.textContent = '已更新';
-                
-                refreshBtn.innerHTML = '<span>✓</span> 成功';
-                setTimeout(() => {
-                    refreshBtn.innerHTML = '<span>↻</span> 刷新';
-                }, 1000);
-            }, 600);
-        }
-        
-        // 更新最后更新时间
-        function updateLastUpdated() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('zh-CN', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+
+            // 绑定事件
+            currencies.forEach(([code]) => {
+                const input = document.getElementById(code);
+                input.addEventListener('input', () => convertFrom(code));
             });
-            lastUpdated.textContent = `更新: ${timeStr}`;
         }
-        
-        // 事件监听
-        baseAmount.addEventListener('input', updateCurrencyList);
-        baseCurrency.addEventListener('change', updateCurrencyList);
-        resetBtn.addEventListener('click', reset);
-        refreshBtn.addEventListener('click', refreshRates);
-        
-        // 键盘快捷键
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') reset();
-            if (e.ctrlKey && e.key === 'r') {
-                e.preventDefault();
-                refreshRates();
+
+        // 换算逻辑
+        function convertFrom(sourceCode) {
+            const sourceInput = document.getElementById(sourceCode);
+            const sourceValue = parseFloat(sourceInput.value);
+            
+            if (isNaN(sourceValue) || sourceValue === 0) {
+                // 清空所有
+                currencies.forEach(([code]) => {
+                    if (code !== sourceCode) {
+                        document.getElementById(code).value = '';
+                    }
+                });
+                return;
             }
-            if (e.key === 'Enter') updateCurrencyList();
-        });
-        
-        // 页面加载时初始化
-        window.addEventListener('DOMContentLoaded', () => {
-            updateCurrencyList();
-            updateLastUpdated();
-        });
-        
-        // 窗口大小改变时重新计算
-        window.addEventListener('resize', () => {
-            // 强制重新渲染以确保适应新高度
-            document.body.style.height = window.innerHeight + 'px';
-        });
+
+            const sourceRate = parseFloat(sourceInput.dataset.rate);
+            const baseUSD = sourceValue / sourceRate; // 换算成USD
+
+            currencies.forEach(([code, , rate]) => {
+                if (code !== sourceCode) {
+                    const targetInput = document.getElementById(code);
+                    const converted = baseUSD * rate;
+                    // 格式化数字
+                    targetInput.value = formatNumber(converted);
+                }
+            });
+        }
+
+        // 数字格式化
+        function formatNumber(num) {
+            if (num >= 1) {
+                return num.toFixed(2).replace(/\.00$/, '');
+            } else if (num >= 0.01) {
+                return num.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+            } else {
+                return num.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+            }
+        }
+
+        // 初始化
+        init();
     </script>
 </body>
 </html>
