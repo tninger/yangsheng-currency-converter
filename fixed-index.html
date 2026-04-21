@@ -240,18 +240,19 @@
     </div>
 
     <script>
-        // 预设汇率数据（多币种）
+        // 预设汇率数据（多币种） - 最终修复于2026-04-21
+        // 数据格式: rate表示1 CNY = rate 该货币
         const exchangeRates = {
             CNY: { name: '人民币', rate: 1, flag: '🇨🇳' },
-            USD: { name: '美元', rate: 0.140, flag: '🇺🇸' },
-            EUR: { name: '欧元', rate: 0.127, flag: '🇪🇺' },
-            GBP: { name: '英镑', rate: 0.109, flag: '🇬🇧' },
-            JPY: { name: '日元', rate: 20.5, flag: '🇯🇵' },
-            HKD: { name: '港币', rate: 1.08, flag: '🇭🇰' },
-            AUD: { name: '澳元', rate: 0.208, flag: '🇦🇺' },
-            CAD: { name: '加元', rate: 0.186, flag: '🇨🇦' },
-            SGD: { name: '新加坡元', rate: 0.185, flag: '🇸🇬' },
-            KRW: { name: '韩元', rate: 180.5, flag: '🇰🇷' }
+            USD: { name: '美元', rate: 0.146, flag: '🇺🇸' },
+            EUR: { name: '欧元', rate: 0.124, flag: '🇪🇺' },
+            GBP: { name: '英镑', rate: 0.108, flag: '🇬🇧' },
+            JPY: { name: '日元', rate: 23.27, flag: '🇯🇵' },
+            HKD: { name: '港币', rate: 1.15, flag: '🇭🇰' },
+            AUD: { name: '澳元', rate: 0.205, flag: '🇦🇺' },
+            CAD: { name: '加元', rate: 0.200, flag: '🇨🇦' },
+            SGD: { name: '新加坡元', rate: 0.186, flag: '🇸🇬' },
+            KRW: { name: '韩元', rate: 214.82, flag: '🇰🇷' }
         };
         
         // 要显示的目标货币列表 - 包含所有货币，包括人民币

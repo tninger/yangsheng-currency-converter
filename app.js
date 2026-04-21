@@ -82,18 +82,18 @@ class CurrencyConverter {
     }
     
     useFallbackRates() {
-        // 预设的汇率数据 (作为备用)
+        // 预设的汇率数据 (作为备用) - 更新于2026-04-21
         this.rates = {
             CNY: 1,
-            USD: 0.138,
-            EUR: 0.127,
-            GBP: 0.109,
-            JPY: 20.5,
-            HKD: 1.08,
-            AUD: 0.208,
-            CAD: 0.186,
-            SGD: 0.185,
-            KRW: 180.5
+            USD: 0.146,
+            EUR: 0.124,
+            GBP: 0.108,
+            JPY: 23.27,
+            HKD: 1.15,
+            AUD: 0.205,
+            CAD: 0.200,
+            SGD: 0.186,
+            KRW: 214.82
         };
         this.lastUpdated = new Date();
         this.updateLastUpdated();
